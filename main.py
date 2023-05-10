@@ -44,47 +44,15 @@ def create_csv(file_name, sheet):
         writer.writerows(sheet)
 
 
-def create_xlsx_comprovante(comprovante):
+def create_xlsx(sheet, file_name, max_column, max_row):
     # Create a workbook and add a worksheet.
-    workbook = xlsxwriter.Workbook('comprovante.xlsx')
+    workbook = xlsxwriter.Workbook(file_name + '.xlsx')
     worksheet = workbook.add_worksheet()
 
-    # Start from the first cell. Rows and columns are zero indexed.
-    row = 0
-    col = 0
-
     # Iterate over the data and write it out row by row.
-    for date, price, name in comprovante:
-        worksheet.write(row, col, date)
-        worksheet.write(row, col + 1, price)
-        worksheet.write(row, col + 2, name)
-        row += 1
-
-    workbook.close()
-
-def create_xlsx_template(template):
-    # Create a workbook and add a worksheet.
-    workbook = xlsxwriter.Workbook('template2.xlsx')
-    worksheet = workbook.add_worksheet()
-
-    # Start from the first cell. Rows and columns are zero indexed.
-    row = 0
-    col = 0
-    print('@')
-    # Iterate over the data and write it out row by row.
-    for mes1, mes2, data, valor, razao, forma, comprovante, boleto, observacao, tag in template:
-        print('@')
-        worksheet.write(row, col, mes1)
-        worksheet.write(row, col + 1, mes2)
-        worksheet.write(row, col + 2, data)
-        worksheet.write(row, col + 3, valor)
-        worksheet.write(row, col + 4, razao)
-        worksheet.write(row, col + 5, forma)
-        worksheet.write(row, col + 6, comprovante)
-        worksheet.write(row, col + 7, boleto)
-        worksheet.write(row, col + 8, observacao)
-        worksheet.write(row, col + 9, tag)
-        row += 1
+    for col in range(0, max_column):
+        for row in range(0, max_row):
+            worksheet.write(row, col, sheet[row][col])
 
     workbook.close()
 
@@ -92,7 +60,7 @@ def read_template(comprovante, template_doc, max_col, max_line):
     wb_obj = openpyxl.load_workbook(template_doc + ".xlsx")
     sheet = wb_obj.active
     this_line = []
-    template = [[]]
+    template = []
     for line in range(1, max_line + 1):
         for col in range(1, max_col + 1):
             cell = sheet.cell(row=line, column=col)
@@ -105,10 +73,9 @@ def read_template(comprovante, template_doc, max_col, max_line):
     return template
 
 if __name__ == '__main__':
-    #comprovante = print_comprovantes()
+    comprovante = print_comprovantes()
     #comprovante = read_comprovante()
-    template = read_template('', 'template', 10, 43)
+    #template = read_template('', 'template', 10, 43)
     #create_csv("comprovante", comprovante)
-    #create_xlsx_comprovante(comprovante)
-    create_xlsx_template(template)
-    #comprovante = read_template("", "template")
+    #create_xlsx(comprovante, "comprovante", 3, 60 + 1)
+    #create_xlsx(template, 'template2', 10, 43)
